@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .calculator-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 350px;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+        
+        .result h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        
+        .result p {
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .highlight {
+            color: #4CAF50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <h1>Age Calculator</h1>
+        
+        <div class="input-group">
+            <label for="day">Day</label>
+            <input type="number" id="day" min="1" max="31" placeholder="DD">
+        </div>
+        
+        <div class="input-group">
+            <label for="month">Month</label>
+            <select id="month">
+                <option value="">Select Month</option>
+                <option value="0">January</option>
+                <option value="1">February</option>
+                <option value="2">March</option>
+                <option value="3">April</option>
+                <option value="4">May</option>
+                <option value="5">June</option>
+                <option value="6">July</option>
+                <option value="7">August</option>
+                <option value="8">September</option>
+                <option value="9">October</option>
+                <option value="10">November</option>
+                <option value="11">December</option>
+            </select>
+        </div>
+        
+        <div class="input-group">
+            <label for="year">Year</label>
+            <input type="number" id="year" placeholder="YYYY" min="1900" max="2100">
+        </div>
+        
+        <button onclick="calculateAge()">Calculate Age</button>
+        
+        <div class="result" id="result">
+            <h2>Your Age</h2>
+            <p>You are <span id="age" class="highlight">0</span> years old</p>
+            <p>Born on <span id="birthday" class="highlight">Monday</span></p>
+            <p>Next birthday in <span id="next-birthday" class="highlight">0</span> days</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge() {
+            // Get input values
+            const day = document.getElementById('day').value;
+            const month = document.getElementById('month').value;
+            const year = document.getElementById('year').value;
+            
+            // Validate inputs
+            if (!day || !month || !year) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Create date objects
+            const birthDate = new Date(year, month, day);
+            const today = new Date();
+            
+            // Validate date (in case of invalid dates like February 30)
+            if (birthDate.getDate() != day || birthDate.getMonth() != month || birthDate.getFullYear() != year) {
+                alert('Please enter a valid date');
+                return;
+            }
+            
+            // Calculate age
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            
+            // Adjust age if birthday hasn't occurred yet this year
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            
+            // Calculate days until next birthday
+            let nextBirthday = new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate());
+            if (nextBirthday < today) {
+                nextBirthday.setFullYear(nextBirthday.getFullYear() + 1);
+            }
+            const daysUntilBirthday = Math.ceil((nextBirthday - today) / (1000 * 60 * 60 * 24));
+            
+            // Get day of week for birthday
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayOfWeek = days[birthDate.getDay()];
+            
+            // Display results
+            document.getElementById('age').textContent = age;
+            document.getElementById('birthday').textContent = dayOfWeek;
+            document.getElementById('next-birthday').textContent = daysUntilBirthday;
+            document.getElementById('result').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
